@@ -35,7 +35,15 @@ const App = () => {
     }
 
     // preencher grid
-    setGridItems([]);
+    for (let w = 0; w < 2; w++) {
+      for (let i = 0; i < items.length; i++) {
+        let pos = -1;
+        while (pos < 0 || tmpGrid[pos].item !== null) {
+          pos = Math.floor(Math.random() * (items.length * 2));
+        }
+        tmpGrid[pos].item = i;
+      }
+    }
 
     // passsar o grid temporario para o state
     setGridItems(tmpGrid);
