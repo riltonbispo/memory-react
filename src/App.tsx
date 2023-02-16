@@ -29,28 +29,43 @@ const App = () => {
     return () => clearInterval(timer);
   }, [playing, timeElapsed]);
 
-  useEffect(()=>{
+  useEffect(() => {
+    if (shownCount === 2) {
+      let opened = gridItems.filter((item) => item.shown === true);
+      if (opened.length === 2) {
 
-    if(shownCount === 2){
-      let opened = gridItems.filter(item => item.shown === true)
-      if(opened.length === 2){
-
-        if(opened[0].item === opened[1].item ){
-          let tempGrid = [...gridItems]
-          for (let i in tempGrid){
-            if (tempGrid[i].shown){
-              tempGrid[i].permanentShown = true
-              tempGrid[i].shown = false
+        if (opened[0].item === opened[1].item) {
+          let tempGrid = [...gridItems];
+          for (let i in tempGrid) {
+            if (tempGrid[i].shown) {
+              tempGrid[i].permanentShown = true;
+              tempGrid[i].shown = false;
             }
           }
-          setGridItems(tempGrid)
-          setShownCount(0)
+          setGridItems(tempGrid);
+          setShownCount(0);
+        } else {
+          setTimeout(()=>{
+            let tempGrid = [...gridItems];
+            for (let i in tempGrid) {
+              tempGrid[i].shown = false;
+            }
+            setGridItems(tempGrid);
+            setShownCount(0);
+          }, 1000)
         }
 
+        setMoveCount(moveCount => moveCount + 1)
       }
     }
+  }, [shownCount, gridItems]);
 
-  },[shownCount, gridItems])
+  useEffect(() => {
+    if(moveCount > 0 && gridItems.every(item => item.permanentShown === true)) {
+      setPlaying(false)
+    }
+  },[moveCount, gridItems])
+
 
   const resetAndCreatGrid = () => {
     // resetar o jogo
@@ -110,9 +125,8 @@ const App = () => {
         </C.LogoLink>
 
         <C.InfoArea>
-          {shownCount}
           <InfoItem label="Tempo" value={formatTimeElapsed(timeElapsed)} />
-          <InfoItem label="Movimentos" value="0"></InfoItem>
+          <InfoItem label="Movimentos" value={moveCount.toString()}></InfoItem>
         </C.InfoArea>
 
         <Button
