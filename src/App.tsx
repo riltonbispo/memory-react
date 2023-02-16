@@ -22,12 +22,12 @@ const App = () => {
 
   useEffect(() => resetAndCreatGrid(), []);
 
-  useEffect(()=>{
-    const timer = setInterval(()=>{
-      if(playing) setTimeElapsed(timeElapsed + 1)
+  useEffect(() => {
+    const timer = setInterval(() => {
+      if (playing) setTimeElapsed(timeElapsed + 1);
     }, 1000);
-    return () => clearInterval(timer)
-  },[playing, timeElapsed])
+    return () => clearInterval(timer);
+  }, [playing, timeElapsed]);
 
   const resetAndCreatGrid = () => {
     // resetar o jogo
@@ -63,9 +63,21 @@ const App = () => {
     setPlaying(true);
   };
 
-  const  handleItemClick = (index: number) =>{
+  const handleItemClick = (index: number) => {
+    if (playing && index !== null && shownCount < 2) {
+      let tmpGrid = [...gridItems];
 
-  }
+      if (
+        tmpGrid[index].permanentShown === false &&
+        tmpGrid[index].shown === false
+      ) {
+        tmpGrid[index].shown = true;
+        setShownCount(shownCount + 1);
+      }
+
+      setGridItems(tmpGrid);
+    }
+  };
 
   return (
     <C.Container>
@@ -75,7 +87,8 @@ const App = () => {
         </C.LogoLink>
 
         <C.InfoArea>
-          <InfoItem label="Tempo" value={formatTimeElapsed(timeElapsed)}/>
+          {shownCount}
+          <InfoItem label="Tempo" value={formatTimeElapsed(timeElapsed)} />
           <InfoItem label="Movimentos" value="0"></InfoItem>
         </C.InfoArea>
 
@@ -87,11 +100,11 @@ const App = () => {
       </C.Info>
       <C.GridArea>
         <C.Grid>
-          {gridItems.map((item,index)=>(
-            <GridItem 
+          {gridItems.map((item, index) => (
+            <GridItem
               key={index}
               item={item}
-              onClick={() => handleItemClick(index) }
+              onClick={() => handleItemClick(index)}
             />
           ))}
         </C.Grid>
