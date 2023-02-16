@@ -29,6 +29,29 @@ const App = () => {
     return () => clearInterval(timer);
   }, [playing, timeElapsed]);
 
+  useEffect(()=>{
+
+    if(shownCount === 2){
+      let opened = gridItems.filter(item => item.shown === true)
+      if(opened.length === 2){
+
+        if(opened[0].item === opened[1].item ){
+          let tempGrid = [...gridItems]
+          for (let i in tempGrid){
+            if (tempGrid[i].shown){
+              tempGrid[i].permanentShown = true
+              tempGrid[i].shown = false
+            }
+          }
+          setGridItems(tempGrid)
+          setShownCount(0)
+        }
+
+      }
+    }
+
+  },[shownCount, gridItems])
+
   const resetAndCreatGrid = () => {
     // resetar o jogo
     setTimeElapsed(0);
